@@ -2,8 +2,6 @@
 """
 Simple test script to validate the wind ML pipeline.
 """
-import os
-from pathlib import Path
 
 
 def test_data_generation(tmp_path, monkeypatch):
@@ -91,7 +89,6 @@ def test_model_training(tmp_path, monkeypatch):
     print("\nTest 3: Train a simple model...")
 
     import pandas as pd
-
     from wind_ml_project.data_generator import WindDataGenerator
     from wind_ml_project.data_preprocessing import DataPreprocessor
     from wind_ml_project.model_training import ModelTrainer
@@ -157,9 +154,9 @@ def test_full_pipeline(tmp_path, monkeypatch):
     print("\nTest 4: Full pipeline...")
 
     import yaml
-    from wind_ml_project.pipeline import WindMLPipeline
     from wind_ml_project import data_preprocessing as dp_module
     from wind_ml_project import model_training as mt_module
+    from wind_ml_project.pipeline import WindMLPipeline
 
     # Isolate the CWD and all relative paths
     monkeypatch.chdir(tmp_path)
@@ -178,7 +175,9 @@ def test_full_pipeline(tmp_path, monkeypatch):
             "tracking_uri": f"file:{tmp_path / 'mlruns'}",
             "experiment_name": "wind_prediction_test",
         },
-        "alignment": {"output_path": str(tmp_path / "data" / "processed" / "aligned.csv")},
+        "alignment": {
+            "output_path": str(tmp_path / "data" / "processed" / "aligned.csv")
+        },
     }
     cfg_path = tmp_path / "params.yaml"
     cfg_path.parent.mkdir(parents=True, exist_ok=True)
@@ -188,7 +187,9 @@ def test_full_pipeline(tmp_path, monkeypatch):
     # Monkeypatch to save prepared data in tmp_path
     original_save_processed = dp_module.DataPreprocessor.save_processed_data
 
-    def _save_processed(self, X_train, X_test, y_train, y_test, output_dir="data/processed"):
+    def _save_processed(
+        self, X_train, X_test, y_train, y_test, output_dir="data/processed"
+    ):
         return original_save_processed(
             self,
             X_train,
@@ -198,13 +199,17 @@ def test_full_pipeline(tmp_path, monkeypatch):
             output_dir=str(tmp_path / "data" / "processed"),
         )
 
-    monkeypatch.setattr(dp_module.DataPreprocessor, "save_processed_data", _save_processed)
+    monkeypatch.setattr(
+        dp_module.DataPreprocessor, "save_processed_data", _save_processed
+    )
 
     # Monkeypatch to save model results in tmp_path
     original_save_results = mt_module.ModelTrainer.save_results
 
     def _save_results(self, filepath: str = "results/model_comparison.yaml"):
-        return original_save_results(self, filepath=str(tmp_path / "results" / "model_comparison.yaml"))
+        return original_save_results(
+            self, filepath=str(tmp_path / "results" / "model_comparison.yaml")
+        )
 
     monkeypatch.setattr(mt_module.ModelTrainer, "save_results", _save_results)
 
@@ -264,9 +269,7 @@ def test_data_quality(tmp_path, monkeypatch):
     # Consistency checks
     assert df["wind_speed"].min() >= 0, "Negative wind speed"
     assert df["forecast_speed"].min() >= 0, "Negative forecast speed"
-    assert (
-        df["humidity"].min() >= 0 and df["humidity"].max() <= 100
-    ), "Invalid humidity"
+    assert df["humidity"].min() >= 0 and df["humidity"].max() <= 100, "Invalid humidity"
     assert (
         df["pressure"].min() > 900 and df["pressure"].max() < 1100
     ), "Invalid pressure"

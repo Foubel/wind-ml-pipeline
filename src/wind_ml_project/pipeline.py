@@ -86,9 +86,7 @@ class WindMLPipeline:
         raw_path = self.config["data"]["raw_path"]
         aligned_candidate = self.config.get("alignment", {}).get("output_path")
         if aligned_candidate and Path(aligned_candidate).exists():
-            logger.info(
-                f"Aligned data detected, using: {aligned_candidate}"
-            )
+            logger.info(f"Aligned data detected, using: {aligned_candidate}")
             raw_path = aligned_candidate
         df = preprocessor.load_data(raw_path)
 
@@ -102,9 +100,7 @@ class WindMLPipeline:
 
         # Save
         preprocessor.save_processed_data(X_train, X_test, y_train, y_test)
-        logger.info(
-            f"Data prepared: {X_train.shape[0]} train, {X_test.shape[0]} test"
-        )
+        logger.info(f"Data prepared: {X_train.shape[0]} train, {X_test.shape[0]} test")
 
         return X_train, X_test, y_train, y_test
 

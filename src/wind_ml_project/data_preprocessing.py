@@ -71,7 +71,10 @@ class DataPreprocessor:
             df_features["day_cos"] = np.cos(2 * np.pi * df_features["day_of_week"] / 7)
 
         # Forecast - actual difference
-        if "forecast_speed" in df_features.columns and "wind_speed" in df_features.columns:
+        if (
+            "forecast_speed" in df_features.columns
+            and "wind_speed" in df_features.columns
+        ):
             df_features["speed_diff"] = (
                 df_features["forecast_speed"] - df_features["wind_speed"]
             )
@@ -103,25 +106,37 @@ class DataPreprocessor:
 
         base_features = ["forecast_speed", "temperature", "humidity", "pressure"]
 
-        temporal_features = [
-            "hour",
-            "day_of_week",
-            "month",
-            "hour_sin",
-            "hour_cos",
-            "day_sin",
-            "day_cos",
-        ] if self.temporal_features_flag else []
+        temporal_features = (
+            [
+                "hour",
+                "day_of_week",
+                "month",
+                "hour_sin",
+                "hour_cos",
+                "day_sin",
+                "day_cos",
+            ]
+            if self.temporal_features_flag
+            else []
+        )
 
-        lag_features = [
-            "wind_speed_lag1",
-            "wind_speed_lag2",
-        ] if self.lag_features_flag else []
+        lag_features = (
+            [
+                "wind_speed_lag1",
+                "wind_speed_lag2",
+            ]
+            if self.lag_features_flag
+            else []
+        )
 
-        rolling_features = [
-            f"wind_speed_mean_{self.rolling_window}",
-            f"wind_speed_std_{self.rolling_window}",
-        ] if self.rolling_features_flag else []
+        rolling_features = (
+            [
+                f"wind_speed_mean_{self.rolling_window}",
+                f"wind_speed_std_{self.rolling_window}",
+            ]
+            if self.rolling_features_flag
+            else []
+        )
 
         agg_features = [
             "wind_speed_min",
@@ -129,7 +144,13 @@ class DataPreprocessor:
             "wind_speed_std",
         ]
 
-        all_features = base_features + temporal_features + lag_features + rolling_features + agg_features
+        all_features = (
+            base_features
+            + temporal_features
+            + lag_features
+            + rolling_features
+            + agg_features
+        )
         available_features = [f for f in all_features if f in df.columns]
 
         self.feature_columns = available_features

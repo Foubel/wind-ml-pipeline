@@ -95,6 +95,7 @@ class ModelTrainer:
         """Compute evaluation metrics."""
         if isinstance(y_true, pd.Series):
             from typing import cast
+
             y_true = cast(np.ndarray, y_true.values)
 
         metrics = {
@@ -149,6 +150,7 @@ class ModelTrainer:
             # Log model artifact
             import mlflow.sklearn as mlflow_sklearn
             from mlflow.models.signature import infer_signature
+
             signature = infer_signature(X_train, model.predict(X_train))
             input_example = X_train.iloc[:5]
             mlflow_sklearn.log_model(
@@ -271,6 +273,7 @@ def main():
         y_train = pd.read_csv("data/processed/y_train.csv").squeeze()
         y_test = pd.read_csv("data/processed/y_test.csv").squeeze()
         from typing import cast
+
         y_train = cast(pd.Series, y_train)
         y_test = cast(pd.Series, y_test)
         print(f"Data loaded - Train: {X_train.shape}, Test: {X_test.shape}")

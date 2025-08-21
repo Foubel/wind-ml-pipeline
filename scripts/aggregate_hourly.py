@@ -34,7 +34,6 @@ def aggregate_hourly(input_csv: str, output_csv: str, freq: str = "1h") -> None:
         agg_df["wind_speed_min"] = resampler["wind_speed"].min()
         agg_df["wind_speed_max"] = resampler["wind_speed"].max()
 
-
     # Save
     agg_df = agg_df.reset_index()
     agg_df.to_csv(output_csv, index=False)
@@ -42,10 +41,16 @@ def aggregate_hourly(input_csv: str, output_csv: str, freq: str = "1h") -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Aggregate wind data to fixed intervals")
-    parser.add_argument("--input", required=True, help="Path to raw high-frequency measurements CSV")
+    parser = argparse.ArgumentParser(
+        description="Aggregate wind data to fixed intervals"
+    )
+    parser.add_argument(
+        "--input", required=True, help="Path to raw high-frequency measurements CSV"
+    )
     parser.add_argument("--output", required=True, help="Path to save aggregated CSV")
-    parser.add_argument("--freq", default="1h", help="Aggregation frequency (default: 1h)")
+    parser.add_argument(
+        "--freq", default="1h", help="Aggregation frequency (default: 1h)"
+    )
     args = parser.parse_args()
 
     aggregate_hourly(args.input, args.output, args.freq)

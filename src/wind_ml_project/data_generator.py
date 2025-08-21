@@ -33,8 +33,6 @@ class WindDataGenerator:
         noise = np.random.normal(0, noise_factor, len(values))
         return np.maximum(values + noise, 0.1)  # Minimum 0.1 m/s
 
-    
-
     def add_forecast_bias(
         self, actual_values: np.ndarray, bias_factor: float = 0.1
     ) -> np.ndarray:

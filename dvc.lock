@@ -69,8 +69,8 @@ stages:
       md5: ad051cbb3a4e1e9237688309b8767ebc
       size: 923
   fetch_forecast:
-    cmd: PYTHONPATH=src python3 -m 
-      wind_ml_project.data_sources.weather_providers.open_meteo --lat 49.223 
+    cmd: PYTHONPATH=src python3 -m
+      wind_ml_project.data_sources.weather_providers.open_meteo --lat 49.223
       --lon 18.739 --hours 48 --out data/raw/forecast_openmeteo.csv
     outs:
     - path: data/raw/forecast_openmeteo.csv
@@ -78,8 +78,8 @@ stages:
       md5: 38b4faae2e2f0b832936a250f1598a24
       size: 2414
   align_data:
-    cmd: PYTHONPATH=src python3 -m wind_ml_project.alignment --forecast 
-      data/raw/forecast_openmeteo.csv --measures data/raw/wind_data.csv --out 
+    cmd: PYTHONPATH=src python3 -m wind_ml_project.alignment --forecast
+      data/raw/forecast_openmeteo.csv --measures data/raw/wind_data.csv --out
       data/processed/aligned.csv --tolerance-min 30
     deps:
     - path: data/raw/forecast_openmeteo.csv
@@ -96,7 +96,7 @@ stages:
       md5: 18c990d3756ab1cfc21b084ea078b168
       size: 4626
   aggregate_data:
-    cmd: python scripts/aggregate_hourly.py --input data/raw/wind_data_raw.csv 
+    cmd: python scripts/aggregate_hourly.py --input data/raw/wind_data_raw.csv
       --output data/raw/wind_data.csv
     deps:
     - path: data/raw/wind_data_raw.csv

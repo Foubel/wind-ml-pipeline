@@ -19,11 +19,11 @@ data_preprocessing:
   test_size: 0.2
   random_state: 42
   temporal_split: true
-  target_mode: "delta"  
+  target_mode: "delta"
   artifacts_dir: "artifacts"
   feature_engineering:
     temporal_features: true
-    lag_features: true 
+    lag_features: true
     rolling_features: true
     rolling_window: 3
 

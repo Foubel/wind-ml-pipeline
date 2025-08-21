@@ -35,5 +35,6 @@ line-ending = "lf"
 
 [tool.uv]
 dev-dependencies = [
+    "pre-commit>=4.3.0",
     "pytest>=8.0.0",
 ]
