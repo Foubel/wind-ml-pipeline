@@ -1,0 +1,39 @@
+linear_regression:
+  test_metrics:
+    avail_accuracy: 1.0
+    avail_f1: 1.0
+    avail_precision: 1.0
+    avail_recall: 1.0
+    mae: 5.100087019371813e-15
+    r2: 1.0
+    rmse: 5.270287942005419e-15
+  train_metrics:
+    mae: 2.154333810110308e-15
+    r2: 1.0
+    rmse: 2.8535911178979615e-15
+random_forest:
+  test_metrics:
+    avail_accuracy: 1.0
+    avail_f1: 1.0
+    avail_precision: 1.0
+    avail_recall: 1.0
+    mae: 0.6790949999999997
+    r2: 0.7716212591001446
+    rmse: 0.76346138819451
+  train_metrics:
+    mae: 0.22194189814814783
+    r2: 0.9847645538678536
+    rmse: 0.28437902350633454
+ridge_regression:
+  test_metrics:
+    avail_accuracy: 0.9
+    avail_f1: 0.6666666666666666
+    avail_precision: 0.5
+    avail_recall: 1.0
+    mae: 0.6324365114641477
+    r2: 0.8325721465008656
+    rmse: 0.6536918874123219
+  train_metrics:
+    mae: 0.07911151315967738
+    r2: 0.9982331159814425
+    rmse: 0.09684428383990926

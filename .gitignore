@@ -1,39 +1,40 @@
-# === Environnement Python / uv / virtualenv ===
+# === Python environment / uv / virtualenv ===
 .venv/
 *.pyc
 __pycache__/
 
-# === Egg-info et dist ===
+# === Egg-info and dist ===
 *.egg-info/
 dist/
 build/
 
-# === DVC artefacts ===
+# === DVC artifacts ===
 /mlruns
 .dvc/tmp
 .dvc/cache
 
-# === Données (versionnées via DVC) ===
+# === Data (versioned via DVC) ===
 data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
 
-# === Modèles et résultats (versionnés via DVC) ===
+# === Models and results (versioned via DVC) ===
 models/*.pkl
 models/*.joblib
 !models/.gitkeep
 results/*.yaml
+!results/model_comparison.yaml
 results/*.json
 !results/.gitkeep
 
-# === Artefacts locaux (non versionnés) ===
+# === Local artifacts (not versioned) ===
 artifacts/
 
-# Fichiers de résultats générés (Images)
+# === Result files (images) ===
 results/*.png
 
-# === Logs et autres ===
+# === Logs and misc ===
 *.log
 logs/
 outputs/
@@ -44,7 +45,7 @@ repomix-output.txt
 # === Pre-commit ===
 .pre-commit/
 
-# === IDEs / éditeurs ===
+# === IDEs / editors ===
 .vscode/
 .idea/
 *.swp
@@ -54,5 +55,5 @@ repomix-output.txt
 *.img
 .container
 
-# === Mac OS ===
+# === macOS ===
 .DS_Store
