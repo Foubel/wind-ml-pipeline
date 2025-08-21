@@ -1,0 +1,69 @@
+stages:
+  # (Optional) Synthetic data generation for tests
+  generate_data:
+    cmd: python scripts/generate_data.py
+    outs:
+      - data/raw/wind_data_raw.csv
+
+  # Step 1b: Ingest Open-Meteo forecast (real or tests)
+  fetch_forecast:
+    cmd: >-
+      PYTHONPATH=src python3 -m wind_ml_project.data_sources.weather_providers.open_meteo
+      --lat 49.223
+      --lon 18.739
+      --hours 48
+      --out data/raw/forecast_openmeteo.csv
+    outs:
+      - data/raw/forecast_openmeteo.csv
+
+  # Step 2a: Aggregate high-frequency to hourly
+  aggregate_data:
+    cmd: >-
+      python scripts/aggregate_hourly.py
+      --input data/raw/wind_data_raw.csv
+      --output data/raw/wind_data.csv
+    deps:
+      - data/raw/wind_data_raw.csv
+      - scripts/aggregate_hourly.py
+    outs:
+      - data/raw/wind_data.csv
+
+  # Step 2b: Align forecast ↔ measurements
+  align_data:
+    cmd: >-
+      PYTHONPATH=src python3 -m wind_ml_project.alignment
+      --forecast data/raw/forecast_openmeteo.csv
+      --measures data/raw/wind_data.csv
+      --out data/processed/aligned.csv
+      --tolerance-min 30
+    deps:
+      - data/raw/forecast_openmeteo.csv
+      - data/raw/wind_data.csv
+    outs:
+      - data/processed/aligned.csv
+
+  # Step 2c: Preparation and feature engineering
+  prepare_data:
+    cmd: python src/wind_ml_project/data_preprocessing.py
+    deps:
+      - data/processed/aligned.csv
+      - src/wind_ml_project/data_preprocessing.py
+    outs:
+      - data/processed/X_train.csv
+      - data/processed/X_test.csv
+      - data/processed/y_train.csv
+      - data/processed/y_test.csv
+
+  # Step 3: Train models
+  train_models:
+    cmd: python src/wind_ml_project/model_training.py
+    deps:
+      - data/processed/X_train.csv
+      - data/processed/X_test.csv
+      - data/processed/y_train.csv
+      - data/processed/y_test.csv
+      - src/wind_ml_project/model_training.py
+    outs:
+      - models/
+    metrics:
+      - results/model_comparison.yaml

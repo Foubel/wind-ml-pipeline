@@ -1,0 +1,114 @@
+schema: '2.0'
+stages:
+  generate_data:
+    cmd: python scripts/generate_data.py
+    outs:
+    - path: data/raw/wind_data_raw.csv
+      hash: md5
+      md5: e4a520524e81fcc55b52a3328515b475
+      size: 531321
+  prepare_data:
+    cmd: python src/wind_ml_project/data_preprocessing.py
+    deps:
+    - path: data/processed/aligned.csv
+      hash: md5
+      md5: 18c990d3756ab1cfc21b084ea078b168
+      size: 4626
+    - path: src/wind_ml_project/data_preprocessing.py
+      hash: md5
+      md5: b2cbf872b83f97da4719d604d07c0258
+      size: 9380
+    outs:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: f32eef8297d417a9c853e75772a55492
+      size: 3545
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: 6678bc01cc256a1469bd10296b1f252c
+      size: 12299
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: aa7749f283d2081074be2200ef210e6a
+      size: 171
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 6cec71b8d0c8c9d87a4524b007a38044
+      size: 704
+  train_models:
+    cmd: python src/wind_ml_project/model_training.py
+    deps:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: f32eef8297d417a9c853e75772a55492
+      size: 3545
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: 6678bc01cc256a1469bd10296b1f252c
+      size: 12299
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: aa7749f283d2081074be2200ef210e6a
+      size: 171
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 6cec71b8d0c8c9d87a4524b007a38044
+      size: 704
+    - path: src/wind_ml_project/model_training.py
+      hash: md5
+      md5: 84e1a472cb095ec839da0b014c467c89
+      size: 10262
+    outs:
+    - path: models/
+      hash: md5
+      md5: 524ca96c6f29bf09481c1e9eb556bd45.dir
+      size: 359859
+      nfiles: 3
+    - path: results/model_comparison.yaml
+      hash: md5
+      md5: ad051cbb3a4e1e9237688309b8767ebc
+      size: 923
+  fetch_forecast:
+    cmd: PYTHONPATH=src python3 -m 
+      wind_ml_project.data_sources.weather_providers.open_meteo --lat 49.223 
+      --lon 18.739 --hours 48 --out data/raw/forecast_openmeteo.csv
+    outs:
+    - path: data/raw/forecast_openmeteo.csv
+      hash: md5
+      md5: 38b4faae2e2f0b832936a250f1598a24
+      size: 2414
+  align_data:
+    cmd: PYTHONPATH=src python3 -m wind_ml_project.alignment --forecast 
+      data/raw/forecast_openmeteo.csv --measures data/raw/wind_data.csv --out 
+      data/processed/aligned.csv --tolerance-min 30
+    deps:
+    - path: data/raw/forecast_openmeteo.csv
+      hash: md5
+      md5: 38b4faae2e2f0b832936a250f1598a24
+      size: 2414
+    - path: data/raw/wind_data.csv
+      hash: md5
+      md5: 7d117f62b2d2cf42fa58b35d93aacd78
+      size: 103876
+    outs:
+    - path: data/processed/aligned.csv
+      hash: md5
+      md5: 18c990d3756ab1cfc21b084ea078b168
+      size: 4626
+  aggregate_data:
+    cmd: python scripts/aggregate_hourly.py --input data/raw/wind_data_raw.csv 
+      --output data/raw/wind_data.csv
+    deps:
+    - path: data/raw/wind_data_raw.csv
+      hash: md5
+      md5: e4a520524e81fcc55b52a3328515b475
+      size: 531321
+    - path: scripts/aggregate_hourly.py
+      hash: md5
+      md5: 4aa06eab15259f8593fd304d95d813f0
+      size: 1820
+    outs:
+    - path: data/raw/wind_data.csv
+      hash: md5
+      md5: 7d117f62b2d2cf42fa58b35d93aacd78
+      size: 103876
