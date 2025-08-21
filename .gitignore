@@ -1,0 +1,55 @@
+# === Environnement Python / uv / virtualenv ===
+.venv/
+*.pyc
+__pycache__/
+
+# === Egg-info et dist ===
+*.egg-info/
+dist/
+build/
+
+# === DVC artefacts ===
+/mlruns
+.dvc/tmp
+.dvc/cache
+
+# === Données (versionnées via DVC) ===
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# === Modèles et résultats (versionnés via DVC) ===
+models/*.pkl
+models/*.joblib
+!models/.gitkeep
+results/*.yaml
+results/*.json
+!results/.gitkeep
+
+# === Logs et artefacts locaux ===
+*.log
+logs/
+outputs/
+checkpoints/
+runs/
+
+# === Pre-commit ===
+.pre-commit/
+
+# === IDEs / éditeurs ===
+.vscode/
+.idea/
+*.swp
+
+# === Docker / containers ===
+*.tar
+*.img
+*.container
+
+# === Mac OS ===
+.DS_Store
+
+# === Results ===
+results/*.png
+
