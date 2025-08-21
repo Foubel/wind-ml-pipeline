@@ -27,12 +27,19 @@ results/*.yaml
 results/*.json
 !results/.gitkeep
 
-# === Logs et artefacts locaux ===
+# === Artefacts locaux (non versionnés) ===
+artifacts/
+
+# Fichiers de résultats générés (Images)
+results/*.png
+
+# === Logs et autres ===
 *.log
 logs/
 outputs/
 checkpoints/
 runs/
+repomix-output.txt
 
 # === Pre-commit ===
 .pre-commit/
@@ -45,11 +52,7 @@ runs/
 # === Docker / containers ===
 *.tar
 *.img
-*.container
+.container
 
 # === Mac OS ===
 .DS_Store
-
-# === Results ===
-results/*.png
-
