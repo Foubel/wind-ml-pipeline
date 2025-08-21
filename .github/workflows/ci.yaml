@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Create and activate virtualenv
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install --upgrade pip
+          uv pip install --editable .
+          uv pip install pytest pre-commit
+
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest
+
+      - name: Run pre-commit checks
+        run: |
+          source .venv/bin/activate
+          pre-commit run --all-files
