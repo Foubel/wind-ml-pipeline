@@ -20,7 +20,7 @@ End-to-end ML pipeline that **corrects coarse weather forecasts** with **local w
 ### Project Structure
 
 ```
-wind-ml-project/
+wind-ml-pipeline/
 ├─ src/wind_ml_project/
 │  ├─ data_sources/
 │  │  └─ weather_providers/
