@@ -4,7 +4,7 @@ Training and evaluation module for local wind speed prediction models with MLflo
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, FrozenSet, Optional, Tuple, Union
 
 import joblib
 import mlflow
@@ -26,6 +26,17 @@ from sklearn.metrics import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Metrics where a higher value indicates better performance
+HIGHER_IS_BETTER: FrozenSet[str] = frozenset(
+    {
+        "r2",
+        "avail_accuracy",
+        "avail_precision",
+        "avail_recall",
+        "avail_f1",
+    }
+)
 
 
 def availability_metrics(y_true, y_pred, u=3.0):
@@ -200,18 +211,23 @@ class ModelTrainer:
         return all_results
 
     def get_best_model(self, metric: str = "rmse") -> Tuple[str, Any]:
-        """Return the best model by a given metric."""
+        """Return the best model according to a given metric.
+
+        Metrics listed in :data:`HIGHER_IS_BETTER` are maximized; all others are
+        minimized.  By default this will return the model with the lowest RMSE.
+        """
         if not self.results:
             raise ValueError("No model has been trained")
-        best_score = float("inf")
-        best_model_name = None
-        for model_name, results in self.results.items():
-            score = results["test_metrics"][metric]
-            if score < best_score:
-                best_score = score
-                best_model_name = model_name
-        if best_model_name is None:
-            raise ValueError("No valid model found")
+
+        comparator = max if metric in HIGHER_IS_BETTER else min
+        try:
+            best_model_name, _ = comparator(
+                self.results.items(),
+                key=lambda item: item[1]["test_metrics"][metric],
+            )
+        except KeyError as e:
+            raise ValueError(f"Metric '{metric}' not found in results") from e
+
         return best_model_name, self.models[best_model_name]
 
     def print_comparison(self):
